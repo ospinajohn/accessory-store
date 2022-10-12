@@ -7,8 +7,7 @@ import mongoose from 'mongoose';
 //         useNewUrlParser: true,
 //         useUnifiedTopology: true,
 //     }).then(con => {
-//         console.log(`MongoDB Database connected with HOST: ${con.connection.host}`);
-//     });
+//         console.log(`MongoDB Database connected with HOST: ${con.connection.host}`);   
 // };
 
 // Con async and wait
