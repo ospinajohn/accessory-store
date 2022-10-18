@@ -20,13 +20,16 @@ const Header = () => {
 						/>
 						<div className="input-group-append">
 							<button id="search_btn" className="btn">
-								<i className="fa fa-search"></i>
+								<i className="fa fa-search-plus"></i>
 							</button>
 						</div>
 					</div>
 				</div>
-
-				<div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
+				<div className="col-12 col-md-3 mt-4 mt-md-0 text-center text-white ">
+					<i className="fa fa-shopping-cart text-white"></i>
+					<span className="ml-1" id="cart_items ">
+						2
+					</span>
 					<button className="btn btn-danger px-4 text-white login-header-btn float-right">
 						Iniciar de sesión
 					</button>
