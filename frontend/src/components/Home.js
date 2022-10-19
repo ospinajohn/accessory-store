@@ -1,8 +1,18 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
+import MetaData from './layout/MetaData';
+import { getProducts } from '../actions/productActions';
+import { useDispatch } from 'react-redux';
 
 const Home = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getProducts());
+    }, [dispatch]);
+
+
 	return (
-		<Fragment>
+        <Fragment>
+            <MetaData title="La mejor tienda"></MetaData>
 			<h1 className="large text-primary">Ultimos productos</h1>
 			<section id="products" className="container mt-5">
 				<div className="row">

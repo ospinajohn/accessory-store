@@ -7,7 +7,8 @@ export const getProducts = async (req, res, next) => {
 		res.status(200).json({
 			success: true,
 			count: products.length,
-			data: products.map(product => {
+			products: products,
+			data: products.map((product) => {
 				return {
 					_id: product._id,
 					name: product.name,
