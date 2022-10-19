@@ -13,7 +13,11 @@ function App() {
 				<Header />
 				<div className="container container-fluid">
 					<Routes>
+                        {/* Ejmeplo o guia de ruta para el componente Home */}
 						<Route path="/" element={<Home />} />
+                        {/* Guia de como poner la ruta de admin */}
+						{/* <Route path="/admin/...etc" element={<admin />} /> */}
+
 					</Routes>
 				</div>
 				<Footer />
