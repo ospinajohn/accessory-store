@@ -4,13 +4,13 @@ import productsModel from '../models/productsModel.js';
 export const getProducts = async (req, res, next) => {
 	try {
 		const products = await productsModel.find();
-        if(!products) {
-            return res.status(404).json({
-                success: false,
-                error: true,
-                message: 'No se encontraron productos'
-            });
-        }
+		if (!products) {
+			return res.status(404).json({
+				success: false,
+				error: true,
+				message: 'No se encontraron productos',
+			});
+		}
 		res.status(200).json({
 			success: true,
 			count: products.length,
@@ -47,6 +47,7 @@ export const getProductById = async (req, res, next) => {
 		}
 		res.status(200).json({
 			success: true,
+			product: product,
 			data: product,
 		});
 	} catch (error) {
