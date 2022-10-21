@@ -1,207 +1,95 @@
 import React, {Fragment, useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {Link} from 'react-router-dom';
+import {getProducts} from '../actions/productActions';
 import MetaData from './layout/MetaData';
-import { getProducts } from '../actions/productActions';
-import { useDispatch } from 'react-redux';
+import { useAlert } from 'react-alert';
 
 const Home = () => {
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(getProducts());
-    }, [dispatch]);
+	const {products, loading, error} = useSelector((state) => state.products);
+    const alert = useAlert();
 
-
+	const dispatch = useDispatch();
+	useEffect(() => {
+        if (error) {
+            return alert.error(error);
+        }
+		dispatch(getProducts());
+        alert.success('Ok');
+	}, [dispatch]);
 	return (
-        <Fragment>
-            <MetaData title="La mejor tienda"></MetaData>
-			<h1 className="large text-primary">Ultimos productos</h1>
-			<section id="products" className="container mt-5">
-				<div className="row">
-					{/* Inicio de tarjeta */}
-					<div className="col-12 col-sm-6 col-md-4 col-lg-3 my-3">
-						<div className="card p-3 rounded">
-							{/* imagen */}
-							<img
-								className="card-img-top mx-auto"
-								src="/images/111102018_ed-min.jpg"
-								alt="Bueno"
-							/>
-							{/* Titulo */}
-							<div className="card-body d-flex flex-column">
-								<h5 className="card-title">
-									<a href="http://localhost:3000/">Producto 1</a>
-								</h5>
-								{/* Valoracion de estrellas */}
-								<div className="ratings mt-auto">
-									<div className="rating-outer">
-										<div className="rating-inner"></div>
+		<Fragment>
+			{loading ? (
+				<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+			) : (
+				<Fragment>
+					<MetaData title="La mejor tienda"></MetaData>
+					<h1 className="large text-primary">Ultimos productos</h1>
+					<section id="products" className="container mt-5">
+						<div className="row">
+							{products &&
+								products.map((product) => (
+									<div
+										className="col-12 col-sm-6 col-md-4 col-lg-3 my-3"
+										key={product._id}
+									>
+										<div className="card p-3 rounded">
+											<img
+												className="card-img-top mx-auto"
+												src={product.images[0].url}
+												alt={product.name}
+											/>
+											<div className="card-body d-flex flex-column">
+												<h5 className="card-title">
+													<Link to={`/product/${product._id}`}>
+														{product.name}
+													</Link>
+												</h5>
+												<div className="ratings mt-auto">
+													<div className="rating-outer">
+														<div
+															className="rating-inner"
+															style={{
+																width: `${(product.rating /
+																	5) *
+																	100}%`,
+															}}
+														></div>
+													</div>
+													<span id="no_of_reviews">
+														({product.numOfReviews} Reviews)
+													</span>
+												</div>
+												<div className="card-footer d-flex justify-content-between">
+													<p className="card-text">
+														${product.price}
+													</p>
+													{/* Boton de agregar al carrito */}
+													<form action="http://localhost:3000/">
+														<button
+															id="cart"
+															type="button"
+															className="btn btn-warning px-3 ml-4"
+														>
+															<i className="fa fa-shopping-cart"></i>
+														</button>
+													</form>
+												</div>
+												<Link
+													to={`/product/${product._id}`}
+													id="view_btn"
+													className="btn btn-block"
+												>
+													Ver producto
+												</Link>
+											</div>
+										</div>
 									</div>
-									<span id="no_of_reviews">(5 Reviews)</span>
-								</div>
-								{/* Descripcion del producto */}
-								{/* <p className="card-text">
-									Lorem ipsum dolor sit amet consectetur adipisicing
-									elit. Quisquam, quod.
-								</p> */}
-								{/* Precio */}
-								<div className="card-footer d-flex justify-content-between">
-									<p className="text-danger font-weight-bold">
-										<small>$49.99</small>
-									</p>
-									{/* Boton de agregar al carrito */}
-									<form action="http://localhost:3000/">
-										<button
-											id="cart"
-											type="button"
-											className="btn btn-warning px-3 ml-4"
-										>
-											<i className="fa fa-shopping-cart"></i>
-										</button>
-									</form>
-								</div>
-							</div>
+								))}
 						</div>
-					</div>
-					{/* Fin de tarjeta */}
-					{/* Inicio de tarjeta */}
-					<div className="col-12 col-sm-6 col-md-4 col-lg-3 my-3">
-						<div className="card p-3 rounded">
-							{/* imagen */}
-							<img
-								className="card-img-top mx-auto"
-								src="./images/comida_para_perro_y_gato_monello.jpg"
-								alt="gold"
-							/>
-							{/* Titulo */}
-							<div className="card-body d-flex flex-column">
-								<h5 className="card-title">
-									<a href="http://localhost:3000/">Producto 1</a>
-								</h5>
-								{/* Valoracion de estrellas */}
-								<div className="ratings mt-auto">
-									<div className="rating-outer">
-										<div className="rating-inner"></div>
-									</div>
-									<span id="no_of_reviews">(5 Reviews)</span>
-								</div>
-								{/* Descripcion del producto */}
-								{/* <p className="card-text">
-									Lorem ipsum dolor sit amet consectetur adipisicing
-									elit. Quisquam, quod.
-								</p> */}
-								{/* Precio */}
-								<div className="card-footer d-flex justify-content-between">
-									<p className="text-danger font-weight-bold">
-										<small>$49.99</small>
-									</p>
-									{/* Boton de agregar al carrito */}
-									<form action="http://localhost:3000/">
-										<button
-											id="cart"
-											type="button"
-											className="btn btn-warning px-3 ml-4"
-										>
-											<i className="fa fa-shopping-cart"></i>
-										</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					{/* Fin de tarjeta */}
-					{/* Inicio de tarjeta */}
-					<div className="col-12 col-sm-6 col-md-4 col-lg-3 my-3">
-						<div className="card p-3 rounded">
-							{/* imagen */}
-							<img
-								className="card-img-top mx-auto"
-								src={"/images/706460249484.jpg"}
-								alt="Natural gold"
-							/>
-							{/* Titulo */}
-							<div className="card-body d-flex flex-column">
-								<h5 className="card-title">
-									<a href="http://localhost:3000/">Producto 1</a>
-								</h5>
-								{/* Valoracion de estrellas */}
-								<div className="ratings mt-auto">
-									<div className="rating-outer">
-										<div className="rating-inner"></div>
-									</div>
-									<span id="no_of_reviews">(5 Reviews)</span>
-								</div>
-								{/* Descripcion del producto */}
-								{/* <p className="card-text">
-									Lorem ipsum dolor sit amet consectetur adipisicing
-									elit. Quisquam, quod.
-								</p> */}
-								{/* Precio */}
-								<div className="card-footer d-flex justify-content-between">
-									<p className="text-danger font-weight-bold">
-										<small>$49.99</small>
-									</p>
-									{/* Boton de agregar al carrito */}
-									<form action="http://localhost:3000/">
-										<button
-											id="cart"
-											type="button"
-											className="btn btn-warning px-3 ml-4"
-										>
-											<i className="fa fa-shopping-cart"></i>
-										</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					{/* Fin de tarjeta */}
-					{/* Inicio de tarjeta */}
-					<div className="col-12 col-sm-6 col-md-4 col-lg-3 my-3">
-						<div className="card p-3 rounded">
-							{/* imagen */}
-							<img
-								className="card-img-top mx-auto"
-								src="/images/111102018_ed-min.jpg"
-								alt="Naturla"
-							/>
-							{/* Titulo */}
-							<div className="card-body d-flex flex-column">
-								<h5 className="card-title">
-									<a href="http://localhost:3000/">Producto 1</a>
-								</h5>
-								{/* Valoracion de estrellas */}
-								<div className="ratings mt-auto">
-									<div className="rating-outer">
-										<div className="rating-inner"></div>
-									</div>
-									<span id="no_of_reviews">(5 Reviews)</span>
-								</div>
-								{/* Descripcion del producto */}
-								{/* <p className="card-text">
-									Lorem ipsum dolor sit amet consectetur adipisicing
-									elit. Quisquam, quod.
-								</p> */}
-								{/* Precio */}
-								<div className="card-footer d-flex justify-content-between">
-									<p className="text-danger font-weight-bold">
-										<small>$49.99</small>
-									</p>
-									{/* Boton de agregar al carrito */}
-									<form action="http://localhost:3000/">
-										<button
-											id="cart"
-											type="button"
-											className="btn btn-warning px-3 ml-4"
-										>
-											<i className="fa fa-shopping-cart"></i>
-										</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					{/* Fin de tarjeta */}
-				</div>
-			</section>
+					</section>
+				</Fragment>
+			)}
 		</Fragment>
 	);
 };
