@@ -1,21 +1,21 @@
 import React, {Fragment, useEffect} from 'react';
+import {useAlert} from 'react-alert';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {getProducts} from '../actions/productActions';
 import MetaData from './layout/MetaData';
-import { useAlert } from 'react-alert';
 
 const Home = () => {
 	const {products, loading, error} = useSelector((state) => state.products);
-    const alert = useAlert();
+	const alert = useAlert();
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-        if (error) {
-            return alert.error(error);
-        }
+		if (error) {
+			return alert.error(error);
+		}
 		dispatch(getProducts());
-        alert.success('Ok');
+		alert.success('Ok');
 	}, [dispatch]);
 	return (
 		<Fragment>
