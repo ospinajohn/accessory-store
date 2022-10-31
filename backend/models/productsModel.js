@@ -49,7 +49,7 @@ const productsSchema = mongoose.Schema({
 			],
 		},
 	},
-	Seller: {
+	seller: {
 		type: String,
 		required: [true, 'Por favor, registre o selecione el vendedor del producto'],
 	},

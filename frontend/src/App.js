@@ -5,6 +5,11 @@ import Home from './components/Home';
 import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
 import {ProductDetails} from './components/products/ProductDetails';
+import Dashboard from './components/admin/Dashboard';
+import NewProduct from './components/admin/NewProduct';
+import OrdersList from './components/admin/OrdersList';
+import ProductsList from './components/admin/ProductsList';
+import Cart from './components/cart/Cart';
 
 function App() {
 	return (
@@ -20,6 +25,11 @@ function App() {
 						{/* Guia de como poner la ruta de admin */}
 						{/* <Route path="/admin/...etc" element={<admin />} /> */}
 						<Route path="/product/:id" element={<ProductDetails />} />
+						<Route path="/cart" element={<Cart />} />
+						<Route path="/admin/panel" element={<Dashboard />} />
+						<Route path="/admin/product" element={<NewProduct />} />
+						<Route path="/admin/products" element={<ProductsList />} />
+						<Route path="/admin/orders" element={<OrdersList />} />
 					</Routes>
 				</div>
 				<Footer />
