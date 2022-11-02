@@ -5,7 +5,10 @@ const productsSchema = mongoose.Schema({
 		type: String,
 		required: [true, 'Por favor, introduzca el nombre del producto'], // requerido y mensaje de error
 		trim: true, // Elimina espacios en blanco
-		maxLength: [120, 'El nombre del producto no puede superar los 120 caracteres'], // maximo de caracteres
+		maxLength: [
+			120,
+			'El nombre del producto no puede superar los 120 caracteres',
+		], // maximo de caracteres
 	},
 	price: {
 		type: Number,
@@ -51,7 +54,10 @@ const productsSchema = mongoose.Schema({
 	},
 	seller: {
 		type: String,
-		required: [true, 'Por favor, registre o selecione el vendedor del producto'],
+		required: [
+			true,
+			'Por favor, registre o selecione el vendedor del producto',
+		],
 	},
 	stock: {
 		type: Number,
@@ -79,6 +85,11 @@ const productsSchema = mongoose.Schema({
 			},
 		},
 	],
+	user: {
+		type: mongoose.Schema.ObjectId,
+		ref: 'userModel',
+		required: true,
+	},
 	createdAt: {
 		// fecha de creacion
 		type: Date,

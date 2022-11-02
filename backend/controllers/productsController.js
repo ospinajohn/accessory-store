@@ -56,6 +56,7 @@ export const getProductById = catchAsyncErrors(async (req, res, next) => {
 // Creando productos
 export const newProduct = catchAsyncErrors(async (req, res, next) => {
 	// try {
+	req.body.user = req.user.id;
 	const product = await productsModel.create(req.body);
 	res.status(201).json({
 		success: true,

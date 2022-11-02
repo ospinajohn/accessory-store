@@ -12,15 +12,25 @@ import {
 } from '../middlewares/authMiddleware.js';
 
 const router = Router();
-router.get(
-	'/products',
+router.get('/products', getProducts); // Obtener todos los productos
+router.get('/product/:id', getProductById); // Obtener un producto por id
+router.post(
+	'/product/new',
 	isAuthenticatedUser,
 	authorizeRoles('admin'),
-	getProducts
-); // Obtener todos los productos
-router.get('/product/:id', getProductById); // Obtener un producto por id
-router.post('/product/new', newProduct); // Creando producto
-router.put('/product/:id', updateProduct); // Actualizando producto
-router.delete('/product/:id', deleteProduct); // Eliminar producto
+	newProduct
+); // Creando producto
+router.put(
+	'/product/:id',
+	isAuthenticatedUser,
+	authorizeRoles('admin'),
+	updateProduct
+); // Actualizando producto
+router.delete(
+	'/product/:id',
+	isAuthenticatedUser,
+	authorizeRoles('admin'),
+	deleteProduct
+); // Eliminar producto
 
 export default router;

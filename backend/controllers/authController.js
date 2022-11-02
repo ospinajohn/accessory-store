@@ -2,6 +2,8 @@ import catchAsyncErrors from '../middlewares/catchAsyncErrors.js';
 import userModel from '../models/authModel.js';
 import ErrorHandler from '../utils/errorHandler.js';
 import tokenEnviado from '../utils/jwtToken.js';
+import sendEmail from '../utils/sendEmail.js';
+import crypto from 'crypto';
 
 // Crear un usuario
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -41,6 +43,102 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 	if (!passwordOk) {
 		return next(new ErrorHandler('Contraseña incorrecta', 401));
 	}
+
+	tokenEnviado(user, 200, res);
+});
+
+// logaut de usuario
+export const logout = catchAsyncErrors(async (req, res, next) => {
+	res.cookie('token', null, {
+		expires: new Date(Date.now()),
+		httpOnly: true,
+	});
+
+	res.status(200).json({
+		success: true,
+		message: 'Logout',
+	});
+});
+
+// Obtener el perfil del usuario
+export const getUserProfile = catchAsyncErrors(async (req, res, next) => {
+	const user = await userModel.findById(req.user.id);
+
+	res.status(200).json({
+		success: true,
+		user,
+	});
+});
+
+// Olvidar contraseña, recuperar contraseña
+export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
+	const user = await userModel.findOne({email: req.body.email});
+
+	if (!user) {
+		return next(new ErrorHandler('Usuario no encontrado', 404));
+	}
+
+	// Generar el token
+	const resetToken = user.getResetPasswordToken();
+
+	await user.save({validateBeforeSave: false});
+
+	// Enviar el email
+	const resetUrl = `${req.protocol}://${req.get(
+		'host'
+	)}/api/password/reset/${resetToken}`;
+
+	const mensaje = `Hola!\n\nTu link para ajustar una nueva contraseña es el 
+    siguiente: \n\n${resetUrl}\n\n
+    Si no solicitaste este link, por favor comunicate con soporte.\n\n Att:\nVetyShop Store`;
+
+	try {
+		await sendEmail({
+			email: user.email,
+			subject: 'VetyShop Recuperación de la contraseña',
+			mensaje,
+		});
+		res.status(200).json({
+			success: true,
+			message: `Correo enviado a: ${user.email}`,
+		});
+	} catch (error) {
+		user.resetPasswordToken = undefined;
+		user.resetPasswordExpire = undefined;
+
+		await user.save({validateBeforeSave: false});
+		return next(new ErrorHandler(error.message, 500));
+	}
+});
+
+// Resetear la contraseña
+export const resetPassword = catchAsyncErrors(async (req, res, next) => {
+	// Hashar el token
+	const resetPasswordToken = crypto
+		.createHash('sha256')
+		.update(req.params.token)
+		.digest('hex');
+
+	const user = await userModel.findOne({
+		resetPasswordToken,
+		resetPasswordExpire: {$gt: Date.now()},
+	});
+
+	if (!user) {
+		return next(new ErrorHandler('Token no válido o expirado', 400));
+	}
+
+	if (req.body.password !== req.body.confirmPassword) {
+		return next(new ErrorHandler('Las contraseñas no coinciden', 400));
+	}
+
+	// Establecer la nueva contraseña
+	user.password = req.body.password;
+
+	user.resetPasswordToken = undefined;
+	user.resetPasswordExpire = undefined;
+
+	await user.save();
 
 	tokenEnviado(user, 200, res);
 });

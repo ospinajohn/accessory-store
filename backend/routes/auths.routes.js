@@ -1,14 +1,15 @@
 import {Router} from 'express';
 
-import {loginUser, registerUser} from '../controllers/authController.js';
+import {forgotPassword, loginUser, logout, registerUser, resetPassword} from '../controllers/authController.js';
+import { isAuthenticatedUser } from '../middlewares/authMiddleware.js';
 
 const router = Router();
 
 router.route('/user/register').post(registerUser);
 router.route('/login').get(loginUser);
-// router.route('/logout').get(logout);
-// router.route('/password/forgot').post(forgotPassword);
-// router.route('/password/reset/:token').put(resetPassword);
+router.route('/logout').get(isAuthenticatedUser,logout);
+router.route('/password/forgot').post(forgotPassword);
+router.route('/password/reset/:token').put(resetPassword);
 // router.route('/me').get(isAuthenticatedUser, getUserProfile);
 // router.route('/me/update').put(isAuthenticatedUser, updateProfile);
 // router.route('/password/update').put(isAuthenticatedUser, updatePassword);
