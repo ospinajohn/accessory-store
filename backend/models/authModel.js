@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import validator from 'validator';
 
@@ -49,5 +50,18 @@ userSchema.pre('save', async function (next) {
 	}
 	this.password = await bcrypt.hash(this.password, 10);
 });
+
+// description de la contraseña y comparación
+userSchema.methods.comparePassw = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+}
+
+// retornar JWT token
+userSchema.methods.getJwtToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_TIME,
+  });
+}
+
 
 export default mongoose.model('User', userSchema);

@@ -1,11 +1,11 @@
 import {Router} from 'express';
 
-import {registerUser} from '../controllers/authController.js';
+import {loginUser, registerUser} from '../controllers/authController.js';
 
 const router = Router();
 
 router.route('/user/register').post(registerUser);
-// router.route('/login').post(loginUser);
+router.route('/login').get(loginUser);
 // router.route('/logout').get(logout);
 // router.route('/password/forgot').post(forgotPassword);
 // router.route('/password/reset/:token').put(resetPassword);
