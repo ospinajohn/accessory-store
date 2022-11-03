@@ -1,9 +1,9 @@
+import crypto from 'crypto';
 import catchAsyncErrors from '../middlewares/catchAsyncErrors.js';
 import userModel from '../models/authModel.js';
 import ErrorHandler from '../utils/errorHandler.js';
 import tokenEnviado from '../utils/jwtToken.js';
 import sendEmail from '../utils/sendEmail.js';
-import crypto from 'crypto';
 
 // Crear un usuario
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -141,4 +141,130 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 	await user.save();
 
 	tokenEnviado(user, 200, res);
+});
+
+// Actualizar contraseña del perfil del usuario
+export const updatePassword = catchAsyncErrors(async (req, res, next) => {
+	const user = await userModel.findById(req.user.id).select('+password');
+
+	// Comprobar si la contraseña es correcta
+	const passwordOk = await user.comparePassw(req.body.oldPassword);
+
+	if (!passwordOk) {
+		return next(
+			new ErrorHandler(
+				'Contraseña incorrecta, verifique que la contraseña antigua este bien',
+				401
+			)
+		);
+	}
+
+	user.password = req.body.newPassword;
+	await user.save();
+
+	tokenEnviado(user, 200, res);
+});
+
+// Actualizar el perfil del usuario (logeado)
+export const updateProfile = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    // email: req.body.email,
+  };
+
+  // Actualizar avatar
+  // if (req.body.avatar !== '') {
+  //   const user = await userModel.findById(req.user.id);
+
+  //   const imagenId = user.avatar.public_id;
+  //   const res = await cloudinary.v2.uploader.destroy(imagenId);
+
+  //   const resultado = await cloudinary.v2.uploader.upload(req.body.avatar, {
+  //     folder: 'avatars',
+  //     width: 150,
+  //     crop: 'scale',
+  //   });
+
+  //   newUserData.avatar = {
+  //     public_id: resultado.public_id,
+  //     url: resultado.secure_url,
+  //   };
+  // }
+
+  const user = await userModel.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+});
+
+// Servicios controladores de usuarios por ADMIN
+
+// ver todos los users 
+export const allUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await userModel.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+});
+
+// Obtener detalles de un usuario
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler('Usuario no encontrado', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+})
+
+// Actualizar detalles de un usuario
+export const updateUser = catchAsyncErrors(async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  const user = await userModel.findByIdAndUpdate(req.params.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+  });
+});
+
+// Eliminar un usuario
+export const deleteUser = catchAsyncErrors(async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+
+  if (!user) {
+    return next(new ErrorHandler('Usuario no encontrado', 404));
+  }
+
+  // Eliminar avatar
+  // if (user.avatar !== null) {
+  //   const imagenId = user.avatar.public_id;
+  //   await cloudinary.v2.uploader.destroy(imagenId);
+  // }
+
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+  });
 });
