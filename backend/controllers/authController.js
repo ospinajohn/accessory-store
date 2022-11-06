@@ -253,7 +253,7 @@ export const deleteUser = catchAsyncErrors(async (req, res, next) => {
   const user = await userModel.findById(req.params.id);
 
   if (!user) {
-    return next(new ErrorHandler('Usuario no encontrado', 404));
+    return next(new ErrorHandler(`Usuario con id ${req.params.id} no se encuentra en nuentra base de datos...`, 404));
   }
 
   // Eliminar avatar
