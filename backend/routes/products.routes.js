@@ -1,7 +1,10 @@
 import {Router} from 'express';
 import {
+	createProductReview,
 	deleteProduct,
+	deleteReview,
 	getProductById,
+	getProductReviews,
 	getProducts,
 	newProduct,
 	updateProduct,
@@ -32,5 +35,10 @@ router.delete(
 	authorizeRoles('admin'),
 	deleteProduct
 ); // Eliminar producto
+
+// reviews
+router.put('/review', isAuthenticatedUser, createProductReview);
+router.get('/reviews', isAuthenticatedUser, getProductReviews);
+router.delete('/review', isAuthenticatedUser, deleteReview);
 
 export default router;

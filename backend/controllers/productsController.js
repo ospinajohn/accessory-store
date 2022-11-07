@@ -116,3 +116,92 @@ export const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 		});
 	}
 });
+
+// Crear un nuevo review
+export const createProductReview = catchAsyncErrors(async (req, res, next) => {
+	try {
+		const {rating, comment, productId} = req.body;
+		const review = {
+			user: req.user._id,
+			name: req.user.name,
+			rating: Number(rating),
+			comment,
+		};
+		const product = await productsModel.findById(productId);
+		const isReviewed = product.reviews.find(
+			(item) => item.user.toString() === req.user._id.toString()
+		);
+		if (isReviewed) {
+			product.reviews.forEach((review) => {
+				if (review.user.toString() === req.user._id.toString()) {
+					review.comment = comment;
+					review.rating = rating;
+				}
+			});
+		} else {
+			product.reviews.push(review);
+			product.numOfReviews = product.reviews.length;
+		}
+		product.ratings =
+			product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+			product.reviews.length;
+		await product.save({validateBeforeSave: false});
+		res.status(200).json({
+			success: true,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			error: 'Error en el servidor',
+		});
+	}
+});
+
+// Obtener todos los reviews de un producto
+export const getProductReviews = catchAsyncErrors(async (req, res, next) => {
+	try {
+		const product = await productsModel.findById(req.query.id);
+		res.status(200).json({
+			success: true,
+			reviews: product.reviews,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			error: 'Error en el servidor',
+		});
+	}
+});
+
+// Eliminar un review
+export const deleteReview = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const product = await productsModel.findById(req.query.productId);
+    const reviews = product.reviews.filter(
+      (review) => review._id.toString() !== req.query.id.toString()
+    );
+    const numOfReviews = reviews.length;
+    const ratings =
+      product.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
+    await productsModel.findByIdAndUpdate(
+      req.query.productId,
+      {
+        reviews,
+        numOfReviews,
+        ratings,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.status(200).json({
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error en el servidor',
+    });
+  }
+});
