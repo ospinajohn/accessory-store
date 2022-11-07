@@ -1,36 +1,40 @@
 import catchAsyncErrors from '../middlewares/catchAsyncErrors.js';
 import productsModel from '../models/productsModel.js';
+import APIFeatures from '../utils/apiFeatures.js';
 import ErrorHandler from '../utils/errorHandler.js';
 
 // Obtener todos los productos
 export const getProducts = catchAsyncErrors(async (req, res, next) => {
-	try {
-		const products = await productsModel.find();
-		if (!products) {
-			return next(new ErrorHandler('Producto no encontrado', 404));
-		}
-		res.status(200).json({
-			success: true,
-			count: products.length,
-			products: products,
-			data: products.map((product) => {
-				return {
-					_id: product._id,
-					name: product.name,
-					price: product.price,
-					request: {
-						type: 'GET',
-						url: 'http://localhost:4000/api/product/' + product._id,
-					},
-				};
-			}),
-		});
-	} catch (error) {
-		res.status(500).json({
-			success: false,
-			error: 'Error en el servidor',
-		});
+	const resPerPage = 3;
+	const productsCount = await productsModel.countDocuments();
+
+	const apiFeatures = new APIFeatures(productsModel.find(), req.query)
+		.search()
+		.filter();
+
+	let productos = await apiFeatures.query;
+	let filteredProductsCount = productos.length;
+	apiFeatures.pagination(resPerPage);
+	productos = await apiFeatures.query.clone();
+
+	res.status(200).json({
+		success: true,
+		productsCount,
+		resPerPage,
+		filteredProductsCount,
+		productos,
+	});
+
+	//-----------------------------------------
+	const products = await productsModel.find();
+	if (!products) {
+		return next(new ErrorHandler('Producto no encontrado', 404));
 	}
+	res.status(200).json({
+		success: true,
+		count: products.length,
+		products: products,
+	});
 });
 
 // Obtener un producto por id
@@ -175,33 +179,34 @@ export const getProductReviews = catchAsyncErrors(async (req, res, next) => {
 
 // Eliminar un review
 export const deleteReview = catchAsyncErrors(async (req, res, next) => {
-  try {
-    const product = await productsModel.findById(req.query.productId);
-    const reviews = product.reviews.filter(
-      (review) => review._id.toString() !== req.query.id.toString()
-    );
-    const numOfReviews = reviews.length;
-    const ratings =
-      product.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
-    await productsModel.findByIdAndUpdate(
-      req.query.productId,
-      {
-        reviews,
-        numOfReviews,
-        ratings,
-      },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
-    res.status(200).json({
-      success: true,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Error en el servidor',
-    });
-  }
+	try {
+		const product = await productsModel.findById(req.query.productId);
+		const reviews = product.reviews.filter(
+			(review) => review._id.toString() !== req.query.id.toString()
+		);
+		const numOfReviews = reviews.length;
+		const ratings =
+			product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+			reviews.length;
+		await productsModel.findByIdAndUpdate(
+			req.query.productId,
+			{
+				reviews,
+				numOfReviews,
+				ratings,
+			},
+			{
+				new: true,
+				runValidators: true,
+			}
+		);
+		res.status(200).json({
+			success: true,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			error: 'Error en el servidor',
+		});
+	}
 });
