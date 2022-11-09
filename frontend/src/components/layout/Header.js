@@ -1,4 +1,5 @@
 import React, {Fragment} from 'react';
+import { Link } from 'react-router-dom';
 import {Search} from './Search';
 
 const Header = () => {
@@ -20,9 +21,9 @@ const Header = () => {
 					<span className="ml-1" id="cart_items ">
 						2
 					</span>
-					<button className="btn btn-danger px-4 text-white login-header-btn float-right">
+					<Link to={"/login"} className="btn btn-danger px-4 text-white login-header-btn float-right">
 						Iniciar de sesión
-					</button>
+					</Link>
 				</div>
 			</nav>
 		</Fragment>

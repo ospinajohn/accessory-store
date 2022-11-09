@@ -1,3 +1,5 @@
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 import React, {Fragment, useEffect, useState} from 'react';
 import {useAlert} from 'react-alert';
 import Pagination from 'react-js-pagination';
@@ -9,22 +11,21 @@ import MetaData from './layout/MetaData';
 const Home = () => {
 	const params = useParams();
 	const keyword = params.keyword;
+	const [precio, setPrecio] = useState([100, 1000000]);
 	const [currentPage, setCurrentPage] = useState(1);
+	const alert = useAlert();
 
 	const {products, loading, error, resPerPage, productsCount} = useSelector(
 		(state) => state.products
 	);
-	const alert = useAlert();
 
 	const dispatch = useDispatch();
 	useEffect(() => {
 		if (error) {
 			return alert.error(error);
 		}
-		dispatch(getProducts(currentPage, keyword));
-	}, [dispatch, alert, error, currentPage, keyword]);
-
-  console.log("My keyword is: " + keyword);
+		dispatch(getProducts(currentPage, keyword, precio));
+	}, [dispatch, alert, error, currentPage, keyword, precio]);
 
 	function setCurrentPageNo(pageNumber) {
 		setCurrentPage(pageNumber);
@@ -40,6 +41,26 @@ const Home = () => {
 					<h1 className="large text-primary">Ultimos productos</h1>
 					<section id="products" className="container mt-5">
 						<div className="row">
+							<Slider
+								range
+								className="t-slider"
+								marks={{
+									100: `$100`,
+									1000000: `$1000000`,
+								}}
+								min={100}
+								max={1000000}
+								defaultValue={[100, 1000000]}
+								tipFormatter={(value) => `$${value}`}
+								tipProps={{
+									placement: 'top',
+									prefixCls: 'rc-slider-tooltip',
+									visible: true,
+								}}
+								value={precio}
+								onChange={(precio) => setPrecio(precio)}
+							></Slider>
+
 							{products &&
 								products.map((product) => (
 									<div

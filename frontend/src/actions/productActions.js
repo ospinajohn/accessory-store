@@ -10,13 +10,13 @@ import {
 } from '../constants/productConstants';
 
 // obtener todos los productos
-export const getProducts = (currentPage = 1, keyword = '') => async (
+export const getProducts = (currentPage = 1, keyword = '', precio) => async (
 	dispatch
 ) => {
 	try {
 		dispatch({type: ALL_PRODUCTS_REQUEST});
 		const {data} = await axios.get(
-			`/api/products?keyword=${keyword}&page=${currentPage}`
+			`/api/products?keyword=${keyword}&page=${currentPage}&price[gte]=${precio[0]}&price[lte]=${precio[1]}`
 		);
 
 		dispatch({type: ALL_PRODUCTS_SUCCESS, payload: data});
