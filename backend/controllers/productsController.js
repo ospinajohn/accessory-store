@@ -5,7 +5,7 @@ import ErrorHandler from '../utils/errorHandler.js';
 
 // Obtener todos los productos
 export const getProducts = catchAsyncErrors(async (req, res, next) => {
-	const resPerPage = 3;
+	const resPerPage = 4;
 	const productsCount = await productsModel.countDocuments();
 
 	const apiFeatures = new APIFeatures(productsModel.find(), req.query)
@@ -22,18 +22,7 @@ export const getProducts = catchAsyncErrors(async (req, res, next) => {
 		productsCount,
 		resPerPage,
 		filteredProductsCount,
-		productos,
-	});
-
-	//-----------------------------------------
-	const products = await productsModel.find();
-	if (!products) {
-		return next(new ErrorHandler('Producto no encontrado', 404));
-	}
-	res.status(200).json({
-		success: true,
-		count: products.length,
-		products: products,
+		productos: productos,
 	});
 });
 

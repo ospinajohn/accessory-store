@@ -1,15 +1,15 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import Home from './components/Home';
-import Footer from './components/layout/Footer';
-import Header from './components/layout/Header';
-import {ProductDetails} from './components/products/ProductDetails';
 import Dashboard from './components/admin/Dashboard';
 import NewProduct from './components/admin/NewProduct';
 import OrdersList from './components/admin/OrdersList';
 import ProductsList from './components/admin/ProductsList';
 import Cart from './components/cart/Cart';
+import Home from './components/Home';
+import Footer from './components/layout/Footer';
+import Header from './components/layout/Header';
+import { ProductDetails } from './components/products/ProductDetails';
 
 function App() {
 	return (
@@ -30,6 +30,7 @@ function App() {
 						<Route path="/admin/product" element={<NewProduct />} />
 						<Route path="/admin/products" element={<ProductsList />} />
 						<Route path="/admin/orders" element={<OrdersList />} />
+            <Route path="/search/:keyword" element={<Home />} />
 					</Routes>
 				</div>
 				<Footer />

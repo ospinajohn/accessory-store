@@ -10,10 +10,15 @@ import {
 } from '../constants/productConstants';
 
 // obtener todos los productos
-export const getProducts = () => async (dispatch) => {
+export const getProducts = (currentPage = 1, keyword = '') => async (
+	dispatch
+) => {
 	try {
 		dispatch({type: ALL_PRODUCTS_REQUEST});
-		const {data} = await axios.get('/api/products');
+		const {data} = await axios.get(
+			`/api/products?keyword=${keyword}&page=${currentPage}`
+		);
+
 		dispatch({type: ALL_PRODUCTS_SUCCESS, payload: data});
 	} catch (error) {
 		dispatch({type: ALL_PRODUCTS_FAIL, payload: error.message});

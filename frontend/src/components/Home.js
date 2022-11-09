@@ -1,12 +1,19 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {useAlert} from 'react-alert';
+import Pagination from 'react-js-pagination';
 import {useDispatch, useSelector} from 'react-redux';
-import {Link} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import {getProducts} from '../actions/productActions';
 import MetaData from './layout/MetaData';
 
 const Home = () => {
-	const {products, loading, error} = useSelector((state) => state.products);
+	const params = useParams();
+	const keyword = params.keyword;
+	const [currentPage, setCurrentPage] = useState(1);
+
+	const {products, loading, error, resPerPage, productsCount} = useSelector(
+		(state) => state.products
+	);
 	const alert = useAlert();
 
 	const dispatch = useDispatch();
@@ -14,9 +21,15 @@ const Home = () => {
 		if (error) {
 			return alert.error(error);
 		}
-		dispatch(getProducts());
-		alert.success('Ok');
-	}, [dispatch]);
+		dispatch(getProducts(currentPage, keyword));
+	}, [dispatch, alert, error, currentPage, keyword]);
+
+  console.log("My keyword is: " + keyword);
+
+	function setCurrentPageNo(pageNumber) {
+		setCurrentPage(pageNumber);
+	}
+
 	return (
 		<Fragment>
 			{loading ? (
@@ -50,9 +63,7 @@ const Home = () => {
 														<div
 															className="rating-inner"
 															style={{
-																width: `${(product.rating /
-																	5) *
-																	100}%`,
+																width: `${(product.rating / 5) * 100}%`,
 															}}
 														></div>
 													</div>
@@ -61,9 +72,7 @@ const Home = () => {
 													</span>
 												</div>
 												<div className="card-footer d-flex justify-content-between">
-													<p className="card-text">
-														${product.price}
-													</p>
+													<p className="card-text">${product.price}</p>
 													{/* Boton de agregar al carrito */}
 													<form action="http://localhost:3000/">
 														<button
@@ -88,6 +97,20 @@ const Home = () => {
 								))}
 						</div>
 					</section>
+					<div className="d-flex justify-content-center mt-5">
+						<Pagination
+							activePage={currentPage}
+							itemsCountPerPage={resPerPage}
+							totalItemsCount={productsCount}
+							onChange={setCurrentPageNo}
+							nextPageText={'Siguiente'}
+							prevPageText={'Anterior'}
+							firstPageText={'Primera'}
+							lastPageText={'Ultima'}
+							itemClass="page-item"
+							linkClass="page-link"
+						/>
+					</div>
 				</Fragment>
 			)}
 		</Fragment>
