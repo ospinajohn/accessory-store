@@ -1,12 +1,16 @@
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import express from 'express';
 import errorMiddleware from './middlewares/errors.js';
 import authRouter from './routes/auths.routes.js';
-import productsRouter from './routes/products.routes.js';
 import orderRouter from './routes/order.routes.js';
-import cookieParser from 'cookie-parser';
+import productsRouter from './routes/products.routes.js';
+import fileUpload from 'express-fileupload';
 
 const app = express();
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(fileUpload());
 
 app.use(express.json());
 

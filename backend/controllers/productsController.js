@@ -5,7 +5,7 @@ import ErrorHandler from '../utils/errorHandler.js';
 
 // Obtener todos los productos
 export const getProducts = catchAsyncErrors(async (req, res, next) => {
-	const resPerPage = 4;
+	const resPerPage = 5;
 	const productsCount = await productsModel.countDocuments();
 
 	const apiFeatures = new APIFeatures(productsModel.find(), req.query)
@@ -71,7 +71,7 @@ export const updateProduct = catchAsyncErrors(async (req, res, next) => {
 			return next(new ErrorHandler('Producto no encontrado', 404));
 		}
 		// Si el producto si existe, entonces se actualiza
-		product = await productModel.findByIdAndUpdate(req.params.id, product, {
+		product = await productsModel.findByIdAndUpdate(req.params.id, product, {
 			new: true,
 			runValidators: true,
 		});

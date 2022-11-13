@@ -4,18 +4,25 @@ import userModel from '../models/authModel.js';
 import ErrorHandler from '../utils/errorHandler.js';
 import tokenEnviado from '../utils/jwtToken.js';
 import sendEmail from '../utils/sendEmail.js';
+import cloudinary from 'cloudinary';
 
 // Crear un usuario
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
 	const {name, email, password} = req.body;
+
+  const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    folder: 'avatars',
+    width: '150',
+    crop: 'scale'
+  });
 
 	const user = await userModel.create({
 		name,
 		email,
 		password,
 		avatar: {
-			public_id: 'avatars/1',
-			url: 'https://res.cloudinary.com/dxqjyqz8p/image/upload/v1620000000/avatars/1.png',
+      public_id: result.public_id,
+      url: result.secure_url
 		},
 	});
 	tokenEnviado(user, 201, res);
