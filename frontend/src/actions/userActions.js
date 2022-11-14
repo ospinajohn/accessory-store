@@ -1,9 +1,14 @@
 import axios from 'axios';
 import {
 	CLEAR_ERRORS,
+	LOAD_USER_FAIL,
+	LOAD_USER_REQUEST,
+	LOAD_USER_SUCCESS,
 	LOGIN_FAIL,
 	LOGIN_REQUEST,
 	LOGIN_SUCCESS,
+	LOGOUT_FAIL,
+	LOGOUT_SUCCESS,
 	REGISTER_USER_FAIL,
 	REGISTER_USER_REQUEST,
 	REGISTER_USER_SUCCESS,
@@ -36,6 +41,26 @@ export const register = (userData) => async (dispatch) => {
 		dispatch({type: REGISTER_USER_SUCCESS, payload: data.user});
 	} catch (error) {
 		dispatch({type: REGISTER_USER_FAIL, payload: error.response.data.message});
+	}
+};
+// CARGAR EL USUARIO AUTENTICADO
+export const loadUser = () => async (dispatch) => {
+	try {
+		dispatch({type: LOAD_USER_REQUEST});
+		const {data} = await axios.get('/api/me');
+		dispatch({type: LOAD_USER_SUCCESS, payload: data.user});
+	} catch (error) {
+		dispatch({type: LOAD_USER_FAIL, payload: error.response.data.message});
+	}
+};
+
+// Logout User
+export const logout = () => async (dispatch) => {
+	try {
+		await axios.get('/api/logout');
+		dispatch({type: LOGOUT_SUCCESS});
+	} catch (error) {
+		dispatch({type: LOGOUT_FAIL, payload: error.response.data.message});
 	}
 };
 

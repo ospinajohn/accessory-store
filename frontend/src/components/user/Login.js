@@ -1,10 +1,12 @@
 import React, {Fragment, useEffect, useState} from 'react';
+import { useAlert } from 'react-alert';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link, useNavigate} from 'react-router-dom';
 import {clearErrors, login} from '../../actions/userActions';
 import MetaData from '../layout/MetaData';
 
 const Login = () => {
+  const alert = useAlert();
 	const navigate = useNavigate();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -24,17 +26,7 @@ const Login = () => {
 		e.preventDefault();
 
 		dispatch(login(email, password));
-
-		const config = {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		};
-
-		const data = {
-			email,
-			password,
-		};
+    alert.success('Se ha iniciado sesión con éxito.');
 	};
 
 	return (

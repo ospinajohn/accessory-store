@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {loadUser} from './actions/userActions';
 import './App.css';
 import Dashboard from './components/admin/Dashboard';
 import NewProduct from './components/admin/NewProduct';
@@ -11,9 +12,15 @@ import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
 import {ProductDetails} from './components/products/ProductDetails';
 import Login from './components/user/Login';
+import Profile from './components/user/Profile';
 import Register from './components/user/Register';
+import store from './store.js';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
+	useEffect(() => {
+		store.dispatch(loadUser());
+	}, []);
 	return (
 		<Router>
 			<div className="App">
@@ -28,13 +35,15 @@ function App() {
 						{/* <Route path="/admin/...etc" element={<admin />} /> */}
 						<Route path="/product/:id" element={<ProductDetails />} />
 						<Route path="/cart" element={<Cart />} />
-						<Route path="/admin/panel" element={<Dashboard />} />
 						<Route path="/admin/product" element={<NewProduct />} />
 						<Route path="/admin/products" element={<ProductsList />} />
 						<Route path="/admin/orders" element={<OrdersList />} />
 						<Route path="/search/:keyword" element={<Home />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
+						<Route path="/profile" element={<Profile />} />
+            {/* Ruta protegida para el admin */}
+						<Route path="/admin/panel" element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} />
 					</Routes>
 				</div>
 				<Footer />
