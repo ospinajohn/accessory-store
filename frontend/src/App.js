@@ -16,6 +16,8 @@ import Profile from './components/user/Profile';
 import Register from './components/user/Register';
 import store from './store.js';
 import ProtectedRoute from './routes/ProtectedRoute';
+import { UpdateProfile } from './components/user/UpdateProfile';
+import { UpdatePassword } from './components/user/UpdatePassword';
 
 function App() {
 	useEffect(() => {
@@ -42,8 +44,13 @@ function App() {
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
 						<Route path="/profile" element={<Profile />} />
+            <Route path="/profile/update" element={<UpdateProfile />} />
+            <Route path="/password/update" element={<UpdatePassword />} />
+
+
             {/* Ruta protegida para el admin */}
 						<Route path="/admin/panel" element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} />
+            R
 					</Routes>
 				</div>
 				<Footer />

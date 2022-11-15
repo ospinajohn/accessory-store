@@ -176,27 +176,27 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 export const updateProfile = catchAsyncErrors(async (req, res, next) => {
   const newUserData = {
     name: req.body.name,
-    // email: req.body.email,
+    email: req.body.email,
   };
 
   // Actualizar avatar
-  // if (req.body.avatar !== '') {
-  //   const user = await userModel.findById(req.user.id);
+  if (req.body.avatar !== '') {
+    const user = await userModel.findById(req.user.id);
 
-  //   const imagenId = user.avatar.public_id;
-  //   const res = await cloudinary.v2.uploader.destroy(imagenId);
+    const imagenId = user.avatar.public_id;
+    const res = await cloudinary.v2.uploader.destroy(imagenId);
 
-  //   const resultado = await cloudinary.v2.uploader.upload(req.body.avatar, {
-  //     folder: 'avatars',
-  //     width: 150,
-  //     crop: 'scale',
-  //   });
+    const resultado = await cloudinary.v2.uploader.upload(req.body.avatar, {
+      folder: 'avatars',
+      width: 240,
+      crop: 'scale',
+    });
 
-  //   newUserData.avatar = {
-  //     public_id: resultado.public_id,
-  //     url: resultado.secure_url,
-  //   };
-  // }
+    newUserData.avatar = {
+      public_id: resultado.public_id,
+      url: resultado.secure_url,
+    };
+  }
 
   const user = await userModel.findByIdAndUpdate(req.user.id, newUserData, {
     new: true,
