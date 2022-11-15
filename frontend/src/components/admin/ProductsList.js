@@ -7,7 +7,7 @@ import MetaData from '../layout/MetaData';
 import Sidebar from './Sidebar';
 
 const ProductsList = () => {
-	const {products, loading, error} = useSelector((state) => state.products);
+	const {products, loading} = useSelector((state) => state.products);
 
 	const dispatch = useDispatch();
 
@@ -88,7 +88,7 @@ const ProductsList = () => {
 						{loading ? (
 							<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
 						) : (
-              // Mostrar los datos de data en la tabla
+							// Mostrar los datos de data en la tabla
 							<MDBDataTable
 								data={setProducts()}
 								className="px-3"

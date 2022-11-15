@@ -19,7 +19,7 @@ const Register = () => {
 
 	// const alert = useAlert();
 	const dispatch = useDispatch();
-	const {isAuthenticated, error, loading} = useSelector((state) => state.auth);
+	const {isAuthenticated, error} = useSelector((state) => state.auth);
 	const navigate = useNavigate();
 
 	useEffect(() => {
