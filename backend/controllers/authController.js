@@ -93,7 +93,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
 	// Enviar el email
 	const resetUrl = `${req.protocol}://${req.get(
 		'host'
-	)}/api/password/reset/${resetToken}`;
+	)}/password/reset/${resetToken}`;
 
 	const mensaje = `Hola!\n\nTu link para ajustar una nueva contraseña es el 
     siguiente: \n\n${resetUrl}\n\n

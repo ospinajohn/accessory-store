@@ -11,13 +11,15 @@ import Home from './components/Home';
 import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
 import {ProductDetails} from './components/products/ProductDetails';
+import {ForgotPassword} from './components/user/ForgotPassword';
 import Login from './components/user/Login';
+import {NewPassword} from './components/user/NewPassword';
 import Profile from './components/user/Profile';
 import Register from './components/user/Register';
-import store from './store.js';
+import {UpdatePassword} from './components/user/UpdatePassword';
+import {UpdateProfile} from './components/user/UpdateProfile';
 import ProtectedRoute from './routes/ProtectedRoute';
-import { UpdateProfile } from './components/user/UpdateProfile';
-import { UpdatePassword } from './components/user/UpdatePassword';
+import store from './store.js';
 
 function App() {
 	useEffect(() => {
@@ -44,13 +46,20 @@ function App() {
 						<Route path="/login" element={<Login />} />
 						<Route path="/register" element={<Register />} />
 						<Route path="/profile" element={<Profile />} />
-            <Route path="/profile/update" element={<UpdateProfile />} />
-            <Route path="/password/update" element={<UpdatePassword />} />
-
-
-            {/* Ruta protegida para el admin */}
-						<Route path="/admin/panel" element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} />
-            R
+						<Route path="/profile/update" element={<UpdateProfile />} />
+						<Route path="/password/update" element={<UpdatePassword />} />
+						<Route path="/password/forgot" element={<ForgotPassword />} />
+						<Route path="/password/reset/:token" element={<NewPassword />} />
+						{/* Ruta protegida para el admin */}
+						<Route
+							path="/admin/panel"
+							element={
+								<ProtectedRoute isAdmin={true}>
+									<Dashboard />
+								</ProtectedRoute>
+							}
+						/>
+						R
 					</Routes>
 				</div>
 				<Footer />
